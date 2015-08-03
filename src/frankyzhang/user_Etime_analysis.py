@@ -118,4 +118,36 @@ def num_of_tasks_etime_sign():
         fout.write(','.join([str(item) for item in [task] + num_of_etime_sign[str(task)]]))
         fout.write('\n')
     fout.close()
-num_of_tasks_etime_sign()
+# num_of_tasks_etime_sign()
+
+def user_personalization_etime_analyse():
+    validusers, users2config = loadvalidusers()  # 用户对应的设置编号
+    config = loadconfig()  # 设置编号对应的设置内容
+
+    etime = defaultdict(lambda: defaultdict(lambda: 0))
+    for l in open('../../data/timeestimation.csv'):
+        user_id, task_id, est_time = l.strip().split(',')
+        etime[user_id][task_id] = int(est_time) * 1000
+
+    dtime = defaultdict(lambda: defaultdict(lambda: 0))
+    for l in open('../../data/dwelltime.txt'):
+        user_id, task_id, _, _, _, dwell_time = l.strip().split('\t')
+        dtime[user_id][task_id] = int(dwell_time)
+
+    etime_by_user = defaultdict(lambda: defaultdict(lambda: [0, 0, 0, 0, 0]))  # {user: {task: [Etime, Etime-Dtime, abs(Etime-Dtime), (Etime-Dtime)/Dtime, abs(Etime-Dtime)/Dtime]}}
+    for user in validusers:
+        for task in etime[user].keys():
+            etime_by_user[user][task][0] = etime[user][task]
+            etime_by_user[user][task][1] = etime[user][task] - dtime[user][task]
+            etime_by_user[user][task][2] = abs(etime[user][task] - dtime[user][task])
+            etime_by_user[user][task][3] = (etime[user][task] - dtime[user][task]) / float(dtime[user][task])
+            etime_by_user[user][task][4] = abs(etime[user][task] - dtime[user][task]) / float(dtime[user][task])
+
+    fout = open('../../result/user_personalization_etime_analyse.csv', 'w')
+    fout.write('user id,config id,task id,Etime,Etime-Dtime,abs(Etime-Dtime),(Etime-Dtime)/Dtime,abs(Etime-Dtime)/Dtime\n')
+    for user in validusers:
+        for task in etime[user].keys():
+            fout.write(','.join([str(item) for item in [user, users2config[user], task] + etime_by_user[user][task]]))
+            fout.write('\n')
+    fout.close()
+user_personalization_etime_analyse()
