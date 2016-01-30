@@ -4,12 +4,19 @@ __author__ = 'zhangfan'
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import ttest_ind
+plt.rc('text', usetex=True)
+
 
 def compare_difference():
     high_dtime = []
     high_etime = []
     low_dtime = []
     low_etime = []
+    font = {
+        'family': 'Times New Roman',
+        'weight': 'normal',
+        'size': 16,
+    }
     for l in open('../../result/time_comparison.csv').readlines():
         configid, taskid, dtime, etime = l.strip().split(',')
         if int(configid) <= 25 and (int(taskid) < 11 or int(taskid) > 14):
@@ -28,8 +35,8 @@ def compare_difference():
     ax1.set_title('control group')
     ax1.set_ylabel('time(s)')
     ax1.set_xticklabels(('dtime', 'ptime'))
-    ax1.set_yticklabels(('', '0', '100', '200', '300', '400', '500', '600', '700'))
-    plt.ylim(-100000, 800000)
+    ax1.set_yticklabels(('0', '100', '200', '300', '400', '500'))
+    plt.ylim(0, 600000)
     plt.scatter([1, ], [low_dtime_mean, ], 10, color='black')
     plt.annotate(str(int(low_dtime_mean)/1000), xy=(1, low_dtime_mean), xycoords='data', xytext=(+10, -3), textcoords='offset points', fontsize=10)
     plt.scatter([2, ], [low_etime_mean, ], 10, color='black')
@@ -47,15 +54,15 @@ def compare_difference():
     ax2.set_title('treatment group')
     ax2.set_xticklabels(('dtime', 'ptime'))
     ax2.set_yticklabels(())
-    plt.ylim(-100000, 800000)
+    plt.ylim(0, 600000)
     plt.scatter([1, ], [high_dtime_mean, ], 10, color='black')
     plt.annotate(str(int(high_dtime_mean)/1000), xy=(1, high_dtime_mean), xycoords='data', xytext=(+10, -3), textcoords='offset points', fontsize=10)
     plt.scatter([2, ], [low_etime_mean, ], 10, color='black')
     plt.annotate(str(int(high_etime_mean)/1000), xy=(2, high_etime_mean), xycoords='data', xytext=(+10, -5), textcoords='offset points', fontsize=10)
-    plt.savefig('../../result/result1.png')
+    plt.savefig('../../result/result1.eps')
     plt.show()
 
-# compare_difference()
+#compare_difference()
 
 def result2():
     highdtime = []
@@ -122,12 +129,13 @@ def result2():
     plt.title('treatment group')
     plt.xticks(index + bar_width, ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16'))
     plt.ylabel('time(s)')
+    plt.ylim(0, 600000)
     ax2.set_yticklabels(('0', '100', '200', '300', '400', '500', '600', '700'))
 
-    plt.savefig('../../result/result2.png')
+    plt.savefig('../../result/result2.eps')
     plt.show()
 
-# result2()
+#result2()
 
 def result3():
     highlong = []
@@ -154,18 +162,23 @@ def result3():
     index = np.arange(16)
     bar_width = 0.3
     opacity = 0.4
-    plowlong = plt.bar(index, lowlong, bar_width, alpha=opacity, color='b', label='control:dtime < ptime')
-    plowshort = plt.bar(index, lowshort, bar_width, alpha=opacity, bottom=lowlong, color='r', label='control:dtime > ptime')
-    phighlong = plt.bar(index + bar_width, highlong, bar_width, alpha=opacity, color='y', label='treatment:dtime < ptime')
-    phighshort = plt.bar(index + bar_width, highshort, bar_width, alpha=opacity, bottom=highlong, color='k', label='treatment:dtime > ptime')
+    plt.figure(figsize=(12, 8))
+    plowlong = plt.bar(index, lowlong, bar_width, alpha=opacity, color='b', label=r'control: dtime $\textless$ ptime')
+    plowshort = plt.bar(index, lowshort, bar_width, alpha=opacity, bottom=lowlong, color='r', label=r'control: dtime $\textgreater$ ptime')
+    phighlong = plt.bar(index + bar_width, highlong, bar_width, alpha=opacity, color='y', label=r'treatment: dtime $\textless$ ptime')
+    phighshort = plt.bar(index + bar_width, highshort, bar_width, alpha=opacity, bottom=highlong, color='k', label=r'treatment: dtime $\textgreater$ ptime')
+
+    '''plowlong = plt.bar(index, lowlong, bar_width, alpha=opacity, color='b', label=r'dtime')
+    plowshort = plt.bar(index, lowshort, bar_width, alpha=opacity, bottom=lowlong, color='r', label=r'dtime')
+    phighlong = plt.bar(index + bar_width, highlong, bar_width, alpha=opacity, color='y', label=r'ptimedddddddddddddddddddddddd')
+    phighshort = plt.bar(index + bar_width, highshort, bar_width, alpha=opacity, bottom=highlong, color='k', label=r'ptimeddddddddddd')'''
+
     plt.xticks(index + bar_width, ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16'))
-    plt.xlabel('task')
+    plt.xlabel('task', fontsize=16)
     plt.ylabel('')
     plt.yticks()
-    plt.legend(bbox_to_anchor=(0., 1., 1., .1), loc=3, ncol=2, mode="expand", borderaxespad=0., prop={'size': 14})
-    plt.savefig('../../result/result3.png')
+    plt.legend(bbox_to_anchor=(0., 1., 1., .1), loc="upper left", ncol=2, mode="expand", borderaxespad=0., prop={'size': 18})
+    plt.savefig('../../result/result3.eps')
     plt.show()
 
-# result3()
-for i in range(2006, 2008):
-    print i
+result3()

@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import re
 
 import sys
+
+plt.rc('text', usetex=True)
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -50,30 +52,33 @@ def user_deviation():
                 low_deviation_std[j + 1] = temp
     fig = plt.figure()
 
+
     ax1 = fig.add_subplot(211)
     index = np.arange(25)
     bar_width = 0.5
     opacity = 0.4
     rects1 = plt.bar(index, low_deviation_mean, bar_width, alpha=opacity, color='b', yerr=low_deviation_std)
     plt.title('control group')
-    plt.xticks(())
     ax1.spines['right'].set_color('none')
     ax1.spines['top'].set_color('none')
     ax1.spines['bottom'].set_position(('data', 0))
     ax1.yaxis.set_ticks_position('left')
+    plt.xticks(())
+    plt.ylim(-1.0, 1.5)
 
     ax2 = fig.add_subplot(212)
     index = np.arange(25)
     opacity = 0.4
     rects1 = plt.bar(index, high_deviation_mean, bar_width, alpha=opacity, color='b', yerr=high_deviation_std)
     plt.title('treatment group')
-    plt.xticks(())
     ax2.spines['right'].set_color('none')
     ax2.spines['top'].set_color('none')
     ax2.spines['bottom'].set_position(('data', 0))
     ax2.yaxis.set_ticks_position('left')
+    plt.xticks(())
+    plt.ylim(-1.0, 1.5)
 
-    plt.savefig('../../result/result4.png')
+    plt.savefig('../../result/result4.eps')
     plt.show()
 
 
